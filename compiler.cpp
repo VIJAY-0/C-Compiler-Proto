@@ -5,7 +5,7 @@
 #include<vector>
 
 enum class TokenType{
-    RETURN,
+    EXIT,
     INTEGER_LIT,
     SEMI_COLON
 };
@@ -34,8 +34,8 @@ std::vector<Token> tokenizer(const std::string &str){
 
             // std::cerr<<buff<<std::endl;
 
-            if(buff == "return"){
-                tokens.push_back({.type = TokenType::RETURN,.value="return"});
+            if(buff == "exit"){
+                tokens.push_back({.type = TokenType::EXIT,.value="exit"});
                 buff.clear();
             }
             else{
@@ -79,7 +79,7 @@ std::string token_to_asm(const std::vector<Token> &tokens){
 
     for(int i=0;i<tokens.size();i++){
         const Token token= tokens.at(i);
-        if(token.type == TokenType::RETURN){
+        if(token.type == TokenType::EXIT){
             if(i+1 < tokens.size() && tokens.at(i+1).type == TokenType::INTEGER_LIT){
                 if(i+2 < tokens.size() && tokens.at(i+2).type == TokenType::SEMI_COLON){
                     output<<"   mov rax, 60\n";
