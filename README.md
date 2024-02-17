@@ -1,1 +1,1 @@
-Light and Non reactive programming language
+Light and Non reactive Element(al) programming language
