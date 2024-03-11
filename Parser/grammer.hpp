@@ -215,7 +215,7 @@ namespace yy {
     {
 #line 68 "Parser/grammer.y"
 
-    Attribute attr ;
+    Attribute* attr ;
     short int s_int;
     struct d_type{
         short int datatype;

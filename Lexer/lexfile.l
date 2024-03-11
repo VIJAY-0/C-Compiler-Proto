@@ -35,20 +35,15 @@
 "return"                                    {TOKEN(_return);}         
 
 [a-zA-Z_]+[0-9a-zA-Z_]*                     {
-                                            strcpy(yylval->attr.name,yytext);
-                                            yylval->attr.type = 0; //ID
+                                            yylval->attr = new Attribute(100,0,SIZEOFINT,std::string(yytext));
                                             TOKEN(_identifier);}
 
 [0-9]+                                      {
-                                            strcpy(yylval->attr.name,yytext);
-                                            yylval->attr.type = INT; //Integer Lit
-                                            yylval->attr.dataSize = SIZEOFINT; //Integer Lit
-                                            yylval->attr.value.ival = std::stoi(yytext);
+                                            yylval->attr = new Attribute(INT,0,SIZEOFINT,std::string(yytext));
                                             TOKEN(_int_lit) ;}
 
 ['].[']                                     {
-                                            strcpy(yylval->attr.name,yytext);
-                                            yylval->attr.type = 2;
+                                            yylval->attr = new Attribute(CHAR,0,SIZEOFCHAR,std::string(yytext));
                                             }
 
 <<EOF>>                                     {TOKEN(YYEOF) ;}

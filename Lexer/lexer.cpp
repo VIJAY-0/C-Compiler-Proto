@@ -727,38 +727,33 @@ case 18:
 YY_RULE_SETUP
 #line 37 "Lexer/lexfile.l"
 {
-                                            strcpy(yylval->attr.name,yytext);
-                                            yylval->attr.type = 0; //ID
+                                            yylval->attr = new Attribute(100,0,SIZEOFINT,std::string(yytext));
                                             TOKEN(_identifier);}
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 42 "Lexer/lexfile.l"
+#line 41 "Lexer/lexfile.l"
 {
-                                            strcpy(yylval->attr.name,yytext);
-                                            yylval->attr.type = INT; //Integer Lit
-                                            yylval->attr.dataSize = SIZEOFINT; //Integer Lit
-                                            yylval->attr.value.ival = std::stoi(yytext);
+                                            yylval->attr = new Attribute(INT,0,SIZEOFINT,std::string(yytext));
                                             TOKEN(_int_lit) ;}
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 49 "Lexer/lexfile.l"
+#line 45 "Lexer/lexfile.l"
 {
-                                            strcpy(yylval->attr.name,yytext);
-                                            yylval->attr.type = 2;
+                                            yylval->attr = new Attribute(CHAR,0,SIZEOFCHAR,std::string(yytext));
                                             }
 	YY_BREAK
 case YY_STATE_EOF(INITIAL):
-#line 54 "Lexer/lexfile.l"
+#line 49 "Lexer/lexfile.l"
 {TOKEN(YYEOF) ;}
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 56 "Lexer/lexfile.l"
+#line 51 "Lexer/lexfile.l"
 ECHO;
 	YY_BREAK
-#line 762 "Lexer/lexer.cpp"
+#line 757 "Lexer/lexer.cpp"
 
 	case YY_END_OF_BUFFER:
 		{
@@ -1719,7 +1714,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 56 "Lexer/lexfile.l"
+#line 51 "Lexer/lexfile.l"
 
 
 

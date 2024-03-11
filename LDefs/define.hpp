@@ -11,7 +11,6 @@
 #define DOUBLE 5
 #define SIZEOFCHAR 1 
 #define SIZEOFINT 2
-#define SIZEOFINT 4
 #define SIZEOFLONG 8
 #define SIZEOFFLOAT 8
 #define SIZEOFDOUBLE 8

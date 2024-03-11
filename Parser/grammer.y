@@ -66,7 +66,7 @@
 %type<ival> root
 
 %union{
-    Attribute attr ;
+    Attribute* attr ;
     short int s_int;
     struct d_type{
         short int datatype;
@@ -101,7 +101,7 @@ params :        var_decl1
 |               %empty ;
 
 var_decl1:      _data_type _identifier{
-                    SymbolTable[std::string($2.name)] =  new Symbol(std::string($2.name),$1.datatype,$1.dataSize,relAddr);
+                    SymbolTable[std::string($2->name)] =  new Symbol(std::string($2->name),$1.datatype,$1.dataSize,relAddr);
                     relAddr = relAddr +  $1.dataSize ;
                 };
 
@@ -122,61 +122,24 @@ _data_type:     _char{
                 };
  
 assignment:     _identifier _assign arithmetic_exp{
-                    if(SymbolTable.find(std::string($1.name))==SymbolTable.end()) std::cerr<<"Variable not declared !!!\n";
+                    if(SymbolTable.find($1->name)==SymbolTable.end()) std::cerr<<"Variable not declared !!!\n";
                     else{addCode(QuadTable,labelPending,'=',$1,$3,$1);
-                    std::cerr<<$1.name<<" "<<$1.name<<" = "<<$3.name<<'\n';}
+                    std::cerr<<$1->name<<" "<<$1->name<<" = "<<$3->name<<'\n';}
                 };
 arithmetic_exp :arithmetic_exp  _plus arithmetic_exp {
-                    char tmp_no[5] ;sprintf(tmp_no, "%d",temp_var_cnt);
-                    strcpy($$.name , "temp");
-                    $$.name[4]=tmp_no[0];
-                    $$.name[5]=tmp_no[1];
-                    $$.name[6]=tmp_no[2];
-                    addCode(QuadTable,$$.name,'+',$1,$3,$$);
-                    std::cerr<<$$.name<<" = "<<$1.name<<" + "<<$3.name<<'\n';
+                    $$->name= "temp"+std::to_string(temp_var_cnt);  
+                    addCode(QuadTable,$$->name,'+',$1,$3,$$);
+                    std::cerr<<$$->name<<" = "<<$1->name<<" + "<<$3->name<<'\n';
                     temp_var_cnt++;
 
-                       SymbolTable[std::string($$.name)] = new Symbol(std::string($$.name),$$.type,$$.dataSize,relAddr);
-                    relAddr = relAddr +  $$.dataSize ;
+                    SymbolTable[std::string($$->name)] = new Symbol(std::string($$->name),$$->type,$$->dataSize,relAddr);
+                    relAddr = relAddr +  $$->dataSize ;
                 } 
 |               arithmetic_exp  _minus  arithmetic_exp {
-                    char tmp_no[5] ; sprintf(tmp_no, "%d",temp_var_cnt);
-                    strcpy($$.name , "temp");
-                    $$.name[4]=tmp_no[0];
-                    $$.name[5]=tmp_no[1];
-                    $$.name[6]=tmp_no[2];
-                    addCode(QuadTable,$$.name,'-',$1,$3,$$);
-                    std::cerr<<$$.name<<" = "<<$1.name<<" - "<<$3.name<<'\n';
-                    temp_var_cnt++;
-
-                    SymbolTable[std::string($$.name)] = new Symbol(std::string($$.name),$$.type,$$.dataSize,relAddr);
-                    relAddr = relAddr +  $$.dataSize ;
                 }
 |               arithmetic_exp  _f_slash  arithmetic_exp {
-                    char tmp_no[5] ; sprintf(tmp_no, "%d",temp_var_cnt);
-                    strcpy($$.name , "temp");
-                    $$.name[4]=tmp_no[0];
-                    $$.name[5]=tmp_no[1];
-                    $$.name[6]=tmp_no[2];
-                    addCode(QuadTable,$$.name,'/',$1,$3,$$);
-                    std::cerr<<$$.name<<" = "<<$1.name<<" / "<<$3.name<<'\n';
-                    temp_var_cnt++;
-
-                       SymbolTable[std::string($$.name)] = new Symbol(std::string($$.name),$$.type,$$.dataSize,relAddr);
-                    relAddr = relAddr +  $$.dataSize ;
 }
 |               arithmetic_exp  _star  arithmetic_exp {
-                    char tmp_no[5] ; sprintf(tmp_no, "%d",temp_var_cnt);
-                    strcpy($$.name , "temp");
-                    $$.name[4]=tmp_no[0];
-                    $$.name[5]=tmp_no[1];
-                    $$.name[6]=tmp_no[2];
-                    addCode(QuadTable,$$.name,'*',$1,$3,$$);
-                    std::cerr<<$$.name<<" = "<<$1.name<<" * "<<$3.name<<'\n';
-                    temp_var_cnt++;
-
-                       SymbolTable[std::string($$.name)] = new Symbol(std::string($$.name),$$.type,$$.dataSize,relAddr);
-                    relAddr = relAddr +  $$.dataSize ;
                 }
 |               _lpar  arithmetic_exp _rpar {
                     $$ = $2;

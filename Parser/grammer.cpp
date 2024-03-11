@@ -617,7 +617,7 @@ namespace yy {
   case 12: // var_decl1: _data_type _identifier
 #line 103 "Parser/grammer.y"
                                       {
-                    SymbolTable[std::string((yystack_[0].value.attr).name)] =  new Symbol(std::string((yystack_[0].value.attr).name),(yystack_[1].value.d_type).datatype,(yystack_[1].value.d_type).dataSize,relAddr);
+                    SymbolTable[std::string((yystack_[0].value.attr)->name)] =  new Symbol(std::string((yystack_[0].value.attr)->name),(yystack_[1].value.d_type).datatype,(yystack_[1].value.d_type).dataSize,relAddr);
                     relAddr = relAddr +  (yystack_[1].value.d_type).dataSize ;
                 }
 #line 624 "Parser/grammer.cpp"
@@ -653,9 +653,9 @@ namespace yy {
   case 18: // assignment: _identifier _assign arithmetic_exp
 #line 124 "Parser/grammer.y"
                                                   {
-                    if(SymbolTable.find(std::string((yystack_[2].value.attr).name))==SymbolTable.end()) std::cerr<<"Variable not declared !!!\n";
+                    if(SymbolTable.find((yystack_[2].value.attr)->name)==SymbolTable.end()) std::cerr<<"Variable not declared !!!\n";
                     else{addCode(QuadTable,labelPending,'=',(yystack_[2].value.attr),(yystack_[0].value.attr),(yystack_[2].value.attr));
-                    std::cerr<<(yystack_[2].value.attr).name<<" "<<(yystack_[2].value.attr).name<<" = "<<(yystack_[0].value.attr).name<<'\n';}
+                    std::cerr<<(yystack_[2].value.attr)->name<<" "<<(yystack_[2].value.attr)->name<<" = "<<(yystack_[0].value.attr)->name<<'\n';}
                 }
 #line 661 "Parser/grammer.cpp"
     break;
@@ -663,121 +663,84 @@ namespace yy {
   case 19: // arithmetic_exp: arithmetic_exp "+" arithmetic_exp
 #line 129 "Parser/grammer.y"
                                                      {
-                    char tmp_no[5] ;sprintf(tmp_no, "%d",temp_var_cnt);
-                    strcpy((yylhs.value.attr).name , "temp");
-                    (yylhs.value.attr).name[4]=tmp_no[0];
-                    (yylhs.value.attr).name[5]=tmp_no[1];
-                    (yylhs.value.attr).name[6]=tmp_no[2];
-                    addCode(QuadTable,(yylhs.value.attr).name,'+',(yystack_[2].value.attr),(yystack_[0].value.attr),(yylhs.value.attr));
-                    std::cerr<<(yylhs.value.attr).name<<" = "<<(yystack_[2].value.attr).name<<" + "<<(yystack_[0].value.attr).name<<'\n';
+                    (yylhs.value.attr)->name= "temp"+std::to_string(temp_var_cnt);  
+                    addCode(QuadTable,(yylhs.value.attr)->name,'+',(yystack_[2].value.attr),(yystack_[0].value.attr),(yylhs.value.attr));
+                    std::cerr<<(yylhs.value.attr)->name<<" = "<<(yystack_[2].value.attr)->name<<" + "<<(yystack_[0].value.attr)->name<<'\n';
                     temp_var_cnt++;
 
-                       SymbolTable[std::string((yylhs.value.attr).name)] = new Symbol(std::string((yylhs.value.attr).name),(yylhs.value.attr).type,(yylhs.value.attr).dataSize,relAddr);
-                    relAddr = relAddr +  (yylhs.value.attr).dataSize ;
+                    SymbolTable[std::string((yylhs.value.attr)->name)] = new Symbol(std::string((yylhs.value.attr)->name),(yylhs.value.attr)->type,(yylhs.value.attr)->dataSize,relAddr);
+                    relAddr = relAddr +  (yylhs.value.attr)->dataSize ;
                 }
-#line 679 "Parser/grammer.cpp"
+#line 675 "Parser/grammer.cpp"
     break;
 
   case 20: // arithmetic_exp: arithmetic_exp "-" arithmetic_exp
-#line 142 "Parser/grammer.y"
+#line 138 "Parser/grammer.y"
                                                        {
-                    char tmp_no[5] ; sprintf(tmp_no, "%d",temp_var_cnt);
-                    strcpy((yylhs.value.attr).name , "temp");
-                    (yylhs.value.attr).name[4]=tmp_no[0];
-                    (yylhs.value.attr).name[5]=tmp_no[1];
-                    (yylhs.value.attr).name[6]=tmp_no[2];
-                    addCode(QuadTable,(yylhs.value.attr).name,'-',(yystack_[2].value.attr),(yystack_[0].value.attr),(yylhs.value.attr));
-                    std::cerr<<(yylhs.value.attr).name<<" = "<<(yystack_[2].value.attr).name<<" - "<<(yystack_[0].value.attr).name<<'\n';
-                    temp_var_cnt++;
-
-                    SymbolTable[std::string((yylhs.value.attr).name)] = new Symbol(std::string((yylhs.value.attr).name),(yylhs.value.attr).type,(yylhs.value.attr).dataSize,relAddr);
-                    relAddr = relAddr +  (yylhs.value.attr).dataSize ;
                 }
-#line 697 "Parser/grammer.cpp"
+#line 682 "Parser/grammer.cpp"
     break;
 
   case 21: // arithmetic_exp: arithmetic_exp _f_slash arithmetic_exp
-#line 155 "Parser/grammer.y"
+#line 140 "Parser/grammer.y"
                                                          {
-                    char tmp_no[5] ; sprintf(tmp_no, "%d",temp_var_cnt);
-                    strcpy((yylhs.value.attr).name , "temp");
-                    (yylhs.value.attr).name[4]=tmp_no[0];
-                    (yylhs.value.attr).name[5]=tmp_no[1];
-                    (yylhs.value.attr).name[6]=tmp_no[2];
-                    addCode(QuadTable,(yylhs.value.attr).name,'/',(yystack_[2].value.attr),(yystack_[0].value.attr),(yylhs.value.attr));
-                    std::cerr<<(yylhs.value.attr).name<<" = "<<(yystack_[2].value.attr).name<<" / "<<(yystack_[0].value.attr).name<<'\n';
-                    temp_var_cnt++;
-
-                       SymbolTable[std::string((yylhs.value.attr).name)] = new Symbol(std::string((yylhs.value.attr).name),(yylhs.value.attr).type,(yylhs.value.attr).dataSize,relAddr);
-                    relAddr = relAddr +  (yylhs.value.attr).dataSize ;
 }
-#line 715 "Parser/grammer.cpp"
+#line 689 "Parser/grammer.cpp"
     break;
 
   case 22: // arithmetic_exp: arithmetic_exp " _f_slash " arithmetic_exp
-#line 168 "Parser/grammer.y"
+#line 142 "Parser/grammer.y"
                                                       {
-                    char tmp_no[5] ; sprintf(tmp_no, "%d",temp_var_cnt);
-                    strcpy((yylhs.value.attr).name , "temp");
-                    (yylhs.value.attr).name[4]=tmp_no[0];
-                    (yylhs.value.attr).name[5]=tmp_no[1];
-                    (yylhs.value.attr).name[6]=tmp_no[2];
-                    addCode(QuadTable,(yylhs.value.attr).name,'*',(yystack_[2].value.attr),(yystack_[0].value.attr),(yylhs.value.attr));
-                    std::cerr<<(yylhs.value.attr).name<<" = "<<(yystack_[2].value.attr).name<<" * "<<(yystack_[0].value.attr).name<<'\n';
-                    temp_var_cnt++;
-
-                       SymbolTable[std::string((yylhs.value.attr).name)] = new Symbol(std::string((yylhs.value.attr).name),(yylhs.value.attr).type,(yylhs.value.attr).dataSize,relAddr);
-                    relAddr = relAddr +  (yylhs.value.attr).dataSize ;
                 }
-#line 733 "Parser/grammer.cpp"
+#line 696 "Parser/grammer.cpp"
     break;
 
   case 23: // arithmetic_exp: "(" arithmetic_exp ")"
-#line 181 "Parser/grammer.y"
+#line 144 "Parser/grammer.y"
                                             {
                     (yylhs.value.attr) = (yystack_[1].value.attr);
                 }
-#line 741 "Parser/grammer.cpp"
+#line 704 "Parser/grammer.cpp"
     break;
 
   case 24: // arithmetic_exp: "[" arithmetic_exp "]"
-#line 184 "Parser/grammer.y"
+#line 147 "Parser/grammer.y"
                                              {}
-#line 747 "Parser/grammer.cpp"
+#line 710 "Parser/grammer.cpp"
     break;
 
   case 25: // arithmetic_exp: "}" arithmetic_exp "}"
-#line 185 "Parser/grammer.y"
+#line 148 "Parser/grammer.y"
                                              {}
-#line 753 "Parser/grammer.cpp"
+#line 716 "Parser/grammer.cpp"
     break;
 
   case 26: // arithmetic_exp: _identifier
-#line 186 "Parser/grammer.y"
+#line 149 "Parser/grammer.y"
                                         {
 
                 }
-#line 761 "Parser/grammer.cpp"
+#line 724 "Parser/grammer.cpp"
     break;
 
   case 27: // arithmetic_exp: _int_lit
-#line 189 "Parser/grammer.y"
+#line 152 "Parser/grammer.y"
                                        {
                     (yylhs.value.attr) = (yystack_[0].value.attr);
                 }
-#line 769 "Parser/grammer.cpp"
+#line 732 "Parser/grammer.cpp"
     break;
 
   case 28: // arithmetic_exp: _float_lit
-#line 192 "Parser/grammer.y"
+#line 155 "Parser/grammer.y"
                                        {
                     (yylhs.value.attr) = (yystack_[0].value.attr);
                 }
-#line 777 "Parser/grammer.cpp"
+#line 740 "Parser/grammer.cpp"
     break;
 
 
-#line 781 "Parser/grammer.cpp"
+#line 744 "Parser/grammer.cpp"
 
             default:
               break;
@@ -1081,7 +1044,7 @@ namespace yy {
   {
        0,    82,    82,    82,    92,    92,    94,    95,    97,    98,
      100,   101,   103,   108,   109,   111,   115,   119,   124,   129,
-     142,   155,   168,   181,   184,   185,   186,   189,   192
+     138,   140,   142,   144,   147,   148,   149,   152,   155
   };
 
   void
@@ -1161,9 +1124,9 @@ namespace yy {
   }
 
 } // yy
-#line 1165 "Parser/grammer.cpp"
+#line 1128 "Parser/grammer.cpp"
 
-#line 195 "Parser/grammer.y"
+#line 158 "Parser/grammer.y"
 
 
 void yy::parser::error(const std::string &msg){

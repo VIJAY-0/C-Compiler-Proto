@@ -13,14 +13,14 @@ void printCode(Quad **quadListHead){
     else{
         Quad *ptr = *quadListHead;
         while(ptr!= nullptr){
-            if(ptr->label!=nullptr)std::cerr<<ptr->operatr<<" : "<<ptr->operand1.name<<" : "<<ptr->operand2.name<<" : "<<ptr->result.name<<'\n';
+            if(ptr->label!="")std::cerr<<ptr->operatr<<" : "<<ptr->operand1->name<<" : "<<ptr->operand2->name<<" : "<<ptr->result->name<<'\n';
             ptr= ptr->NextQuad ;
         } 
     }
     std::cerr<<"------------printing exited----------\n";
 
 }
-void addCode(Quad *quadListHead,char *label,char operatr,Attribute operand1,Attribute operand2,Attribute result){
+void addCode(Quad *quadListHead,std::string label,char operatr,Attribute* operand1,Attribute* operand2,Attribute* result){
 
     // if(label!=nullptr)std::cerr<<"inside addCode ->   "<<operatr<<" : "<<operand1.name<<" : "<<operand2.name<<" : "<<result.name<<'\n';
     if(quadListHead == nullptr){

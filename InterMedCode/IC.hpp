@@ -3,30 +3,33 @@
 
 #include<string>
 
-typedef struct Attribute{
-    short int type; 
-    short int dataSize; 
-    short int subtype;
-    char name[40];
+class Attribute{
+    public:
+        short int type; 
+        short int subtype;
+        short int dataSize; 
+        std::string name;
 
-    union{
-        char cval;
-        int ival;
-        char *string;
-    }value;
 
-}Attribute;
+        Attribute(short int type ,short int subtype,short int dataSize , std::string name):
+            type(type),
+            subtype(subtype),
+            dataSize(dataSize),
+            name(name){}
+        
+        Attribute(){}
+};
 
 
 typedef struct Quad{
-    char *label;
+    std::string label;
     char operatr;
-    Attribute operand1;
-    Attribute operand2;
-    Attribute result;
+    Attribute *operand1;
+    Attribute *operand2;
+    Attribute *result;
     struct Quad *NextQuad=nullptr;
 
-    Quad(char *label , char operatr ,    Attribute operand1,Attribute operand2,Attribute result ):
+    Quad(std::string label , char operatr ,    Attribute *operand1,Attribute *operand2,Attribute *result ):
     label(label),
     operatr(operatr),
     operand1(operand1),
@@ -34,10 +37,12 @@ typedef struct Quad{
     result(result){}
 
     Quad(){}
+
+
 }Quad ;
 
 void createQuadList(Quad **quadListHead);
-void addCode(Quad *quadListHead,char *label,char operatr,Attribute operand1,Attribute operand2,Attribute result);
+void addCode(Quad *quadListHead,std::string label,char operatr,Attribute *operand1,Attribute *operand2,Attribute *result);
 void printCode(Quad **quadListHead);
 void createTemp(char temp[]);
 void createLabel(char temp[]);
