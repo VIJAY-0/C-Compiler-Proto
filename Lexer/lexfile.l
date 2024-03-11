@@ -9,39 +9,60 @@
 #include "MyLexer.hpp"
 // #include "MyLexer.hpp"
 
-#define TOKEN(X) yy::parser::token::X 
+// #define ST_CST(a) static_cast<int>(arithmetic::a)
+#define TOKEN(X)  return yy::parser::token::X ;
 
 %}
 
 %%
 
 [ \r\t]+                                    { /* Ignore whitespace. */ }
-"+"                                         {std::cout<<"PLUS{"<<yytext<<"} \n"; return TOKEN(PLUS) ;}
-"-"                                         {printf("MINUS\n", yytext); return TOKEN(MINUS) ;}
-"/"                                         {printf("SLASH\n", yytext); return TOKEN(DIV) ;}
-"*"                                         {printf("STAR\n", yytext); return TOKEN(STAR) ;}
-"{"                                         {printf("LPAREN1\n", yytext); return TOKEN(LPAREN1) ;}
-"}"                                         {printf("RPAREN1\n", yytext); return TOKEN(RPAREN1) ;}
-[0-9]+                                      {yylval->int_value = std::stoi(std::string(yytext,yyleng));std::cout<<"INT{"<<yytext<<"} \n"; return TOKEN(INT) ;}
-"qwe"                                       {std::cout<<"YYEOF_MAN{"<<yytext<<"} \n"; return TOKEN(YYEOF) ; }
-.                                           {std::cout<<"UNKNOWN{"<<yytext<<"} \n"; return TOKEN(UNKNOWN) ;}
-<<EOF>>                                     {std::cout<<"EOF{"<<yytext<<"} \n"; return TOKEN(YYEOF) ;}
+"+"                                         {TOKEN(_plus) ;}
+"-"                                         {TOKEN(_minus) ;}
+"/"                                         {TOKEN(_f_slash) ;}
+"*"                                         {TOKEN(_star) ;}
+"("                                         {TOKEN(_lpar) ;}
+")"                                         {TOKEN(_rpar) ;}
+"["                                         {TOKEN(_lbrac) ;}
+"]"                                         {TOKEN(_rbrac) ;}
+"{"                                         {TOKEN(_lcurl) ;}
+"}"                                         {TOKEN(_rcurl) ;}
+"="                                         {TOKEN(_assign) ;}
+";"                                         {TOKEN(_semi_col) ;}
+"int"                                       {TOKEN(_int);}         
+"float"                                     {TOKEN(_float);}         
+"main"                                      {TOKEN(_main);}         
+"return"                                    {TOKEN(_return);}         
 
+[a-zA-Z_]+[0-9a-zA-Z_]*                     {
+                                            strcpy(yylval->attr.name,yytext);
+                                            yylval->attr.type = 0; //ID
+                                            TOKEN(_identifier);}
+
+[0-9]+                                      {
+                                            strcpy(yylval->attr.name,yytext);
+                                            yylval->attr.type = INT; //Integer Lit
+                                            yylval->attr.dataSize = SIZEOFINT; //Integer Lit
+                                            yylval->attr.value.ival = std::stoi(yytext);
+                                            TOKEN(_int_lit) ;}
+
+['].[']                                     {
+                                            strcpy(yylval->attr.name,yytext);
+                                            yylval->attr.type = 2;
+                                            }
+
+<<EOF>>                                     {TOKEN(YYEOF) ;}
 
 %%
 
 
 
 
-int MyFlexLexer::yylex(){return TOKEN(YYEMPTY);}
-int MyFlexLexer::yywrap(){return TOKEN(YYEMPTY);}
+int MyFlexLexer::yylex(){TOKEN(YYEMPTY);}
+int MyFlexLexer::yywrap(){TOKEN(YYEMPTY);}
 
 
-MyLexer::MyLexer(std::istream &is , std::ostream &os)
-:MyFlexLexer(is,os)
-{
-
-}
+MyLexer::MyLexer(std::istream &is , std::ostream &os):MyFlexLexer(is,os){}
 
 int MyLexer::yylex(yy::parser::semantic_type *yylval){
     this->yylval= yylval;

@@ -32,7 +32,7 @@
 
 
 /**
- ** \file grammer.hpp
+ ** \file Parser/grammer.hpp
  ** Define the yy::parser class.
  */
 
@@ -42,17 +42,25 @@
 // especially those whose name start with YY_ or yy_.  They are
 // private implementation details that can be changed or removed.
 
-#ifndef YY_YY_GRAMMER_HPP_INCLUDED
-# define YY_YY_GRAMMER_HPP_INCLUDED
+#ifndef YY_YY_PARSER_GRAMMER_HPP_INCLUDED
+# define YY_YY_PARSER_GRAMMER_HPP_INCLUDED
 // "%code requires" blocks.
-#line 4 "grammer.y"
+#line 4 "Parser/grammer.y"
 
-
+    #include<string>
+    #include <cstdlib>
+    #include<cstring>
+    #include<map>
     #include "grammer.hpp"
-class MyLexer ;
+    #include "./../InterMedCode/IC.hpp"
+    #include "./../SymbolTable/symbol.hpp"
+    #include "./../LDefs/define.hpp"
+    
+    class MyLexer ;
+    #define NAMESIZE 20
+    #define m(X) std::move(X)
 
-
-#line 56 "grammer.hpp"
+#line 64 "Parser/grammer.hpp"
 
 
 # include <cstdlib> // std::abort
@@ -187,7 +195,7 @@ class MyLexer ;
 #endif
 
 namespace yy {
-#line 191 "grammer.hpp"
+#line 199 "Parser/grammer.hpp"
 
 
 
@@ -205,13 +213,16 @@ namespace yy {
     /// Symbol semantic values.
     union value_type
     {
-#line 43 "grammer.y"
+#line 68 "Parser/grammer.y"
 
-    int int_value;
-    float real_value;
-    std::string* str_value ;
+    Attribute attr ;
+    short int s_int;
+    struct d_type{
+        short int datatype;
+        short int dataSize;
+    }d_type;
 
-#line 215 "grammer.hpp"
+#line 226 "Parser/grammer.hpp"
 
     };
 #endif
@@ -242,17 +253,28 @@ namespace yy {
     YYEOF = 0,                     // "end of file"
     YYerror = 256,                 // error
     YYUNDEF = 257,                 // "invalid token"
-    ENDOFFILE = 258,               // ENDOFFILE
-    INT = 259,                     // INT
-    REAL = 260,                    // REAL
-    UNKNOWN = 261,                 // UNKNOWN
-    LPAREN1 = 262,                 // "{"
-    RPAREN1 = 263,                 // "}"
-    PLUS = 264,                    // "+"
-    MINUS = 265,                   // "-"
-    STAR = 266,                    // "*"
-    DIV = 267,                     // "/"
-    EQUALS = 268                   // "="
+    _int = 258,                    // _int
+    _float = 259,                  // _float
+    _char = 260,                   // _char
+    _main = 261,                   // _main
+    _return = 262,                 // _return
+    UNKNOWN = 263,                 // UNKNOWN
+    _semi_col = 264,               // _semi_col
+    _int_lit = 265,                // _int_lit
+    _float_lit = 266,              // _float_lit
+    _identifier = 267,             // _identifier
+    _lpar = 268,                   // "("
+    _rpar = 269,                   // ")"
+    _lbrac = 270,                  // "["
+    _rbrac = 271,                  // "]"
+    _lcurl = 272,                  // "{"
+    _rcurl = 273,                  // "}"
+    _plus = 274,                   // "+"
+    _minus = 275,                  // "-"
+    _star = 276,                   // " _f_slash "
+    _asssign = 277,                // "="
+    _f_slash = 278,                // _f_slash
+    _assign = 279                  // _assign
       };
       /// Backward compatibility alias (Bison 3.6).
       typedef token_kind_type yytokentype;
@@ -269,25 +291,45 @@ namespace yy {
     {
       enum symbol_kind_type
       {
-        YYNTOKENS = 14, ///< Number of tokens.
+        YYNTOKENS = 25, ///< Number of tokens.
         S_YYEMPTY = -2,
         S_YYEOF = 0,                             // "end of file"
         S_YYerror = 1,                           // error
         S_YYUNDEF = 2,                           // "invalid token"
-        S_ENDOFFILE = 3,                         // ENDOFFILE
-        S_INT = 4,                               // INT
-        S_REAL = 5,                              // REAL
-        S_UNKNOWN = 6,                           // UNKNOWN
-        S_LPAREN1 = 7,                           // "{"
-        S_RPAREN1 = 8,                           // "}"
-        S_PLUS = 9,                              // "+"
-        S_MINUS = 10,                            // "-"
-        S_STAR = 11,                             // "*"
-        S_DIV = 12,                              // "/"
-        S_EQUALS = 13,                           // "="
-        S_YYACCEPT = 14,                         // $accept
-        S_root = 15,                             // root
-        S_expression = 16                        // expression
+        S__int = 3,                              // _int
+        S__float = 4,                            // _float
+        S__char = 5,                             // _char
+        S__main = 6,                             // _main
+        S__return = 7,                           // _return
+        S_UNKNOWN = 8,                           // UNKNOWN
+        S__semi_col = 9,                         // _semi_col
+        S__int_lit = 10,                         // _int_lit
+        S__float_lit = 11,                       // _float_lit
+        S__identifier = 12,                      // _identifier
+        S__lpar = 13,                            // "("
+        S__rpar = 14,                            // ")"
+        S__lbrac = 15,                           // "["
+        S__rbrac = 16,                           // "]"
+        S__lcurl = 17,                           // "{"
+        S__rcurl = 18,                           // "}"
+        S__plus = 19,                            // "+"
+        S__minus = 20,                           // "-"
+        S__star = 21,                            // " _f_slash "
+        S__asssign = 22,                         // "="
+        S__f_slash = 23,                         // _f_slash
+        S__assign = 24,                          // _assign
+        S_YYACCEPT = 25,                         // $accept
+        S_root = 26,                             // root
+        S_27_1 = 27,                             // $@1
+        S_stms = 28,                             // stms
+        S_stm = 29,                              // stm
+        S_expression1 = 30,                      // expression1
+        S_params = 31,                           // params
+        S_var_decl1 = 32,                        // var_decl1
+        S_var_decl = 33,                         // var_decl
+        S__data_type = 34,                       // _data_type
+        S_assignment = 35,                       // assignment
+        S_arithmetic_exp = 36                    // arithmetic_exp
       };
     };
 
@@ -421,7 +463,7 @@ namespace yy {
     {};
 
     /// Build a parser object.
-    parser (int* result_yyarg, MyLexer* lexer_yyarg);
+    parser (Quad** resultAddr_yyarg, MyLexer* lexer_yyarg);
     virtual ~parser ();
 
 #if 201103L <= YY_CPLUSPLUS
@@ -544,7 +586,7 @@ namespace yy {
 
 #if YYDEBUG
     // YYRLINE[YYN] -- Source line where rule number YYN was defined.
-    static const signed char yyrline_[];
+    static const unsigned char yyrline_[];
     /// Report on the debug stream that the rule \a r is going to be reduced.
     virtual void yy_reduce_print_ (int r) const;
     /// Print the state stack on the debug stream.
@@ -771,23 +813,23 @@ namespace yy {
     /// Constants.
     enum
     {
-      yylast_ = 5,     ///< Last index in yytable_.
-      yynnts_ = 3,  ///< Number of nonterminal symbols.
+      yylast_ = 66,     ///< Last index in yytable_.
+      yynnts_ = 12,  ///< Number of nonterminal symbols.
       yyfinal_ = 4 ///< Termination state number.
     };
 
 
     // User arguments.
-    int* result;
+    Quad** resultAddr;
     MyLexer* lexer;
 
   };
 
 
 } // yy
-#line 789 "grammer.hpp"
+#line 831 "Parser/grammer.hpp"
 
 
 
 
-#endif // !YY_YY_GRAMMER_HPP_INCLUDED
+#endif // !YY_YY_PARSER_GRAMMER_HPP_INCLUDED
