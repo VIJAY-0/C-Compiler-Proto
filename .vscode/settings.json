@@ -1,6 +1,9 @@
 {
     "files.associations": {
         "helium_test_code": "c",
-        "random": "c"
+        "random": "c",
+        "iostream": "cpp",
+        "sstream": "cpp",
+        "iosfwd": "cpp"
     }
 }

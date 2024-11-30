@@ -1,12 +1,15 @@
-int main(int argc)
+int main()
 {
-    int a ;
-    int b ;
-    int c ;
-    int d ;
-    c=2+(65/4)+6*(87+54);
-    b= 234+234+(67/(78+8))-5;
-    a=b*c+(b-c*(a/b));
 
-    return 0;   
+
+
+    int a ;
+
+
+    int b ;
+    a = 12+34;
+    a = a+1000 ;
+    b = a+1234 ;
+    return 0;
+
 }

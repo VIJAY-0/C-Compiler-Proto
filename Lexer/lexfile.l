@@ -21,6 +21,25 @@
 "-"                                         {TOKEN(_minus) ;}
 "/"                                         {TOKEN(_f_slash) ;}
 "*"                                         {TOKEN(_star) ;}
+
+"&"                                         {TOKEN(_and) ;}
+"|"                                         {TOKEN(_or) ;}
+"^"                                         {TOKEN(_xor) ;}
+
+"%"                                         {TOKEN(_modulus);}
+"="                                         {TOKEN(_assign);}
+"=="                                        {TOKEN(_equals);}
+"!="                                        {TOKEN(_not_equals);}
+"<"                                         {TOKEN(_less_than);}
+">"                                         {TOKEN(_greater_than);}
+"<="                                        {TOKEN(_less_equal);}
+">="                                        {TOKEN(_greater_equal);}
+"&&"                                        {TOKEN(_and);}
+"||"                                        {TOKEN(_or);}
+"!"                                         {TOKEN(_not);}
+"++"                                        {TOKEN(_increment);}
+"--"                                        {TOKEN(_decrement);}
+
 "("                                         {TOKEN(_lpar) ;}
 ")"                                         {TOKEN(_rpar) ;}
 "["                                         {TOKEN(_lbrac) ;}
@@ -29,8 +48,43 @@
 "}"                                         {TOKEN(_rcurl) ;}
 "="                                         {TOKEN(_assign) ;}
 ";"                                         {TOKEN(_semi_col) ;}
-"int"                                       {TOKEN(_int);}         
-"float"                                     {TOKEN(_float);}         
+":"                                         {TOKEN(_col) ;}
+
+
+
+"+="                                        {TOKEN(_plus_equals) ;}
+"-="                                        {TOKEN(_minus_equals) ;}
+"/="                                        {TOKEN(_divide_equals) ;}
+"*="                                        {TOKEN(_multiply_equals) ;}
+
+"|="                                        {TOKEN(_col) ;}
+"^="                                        {TOKEN(_col) ;}
+"&="                                        {TOKEN(_col) ;}
+
+"if"                                        {TOKEN(_if);}
+"else"                                      {TOKEN(_else);}
+"switch"                                    {TOKEN(_switch);}
+"case"                                      {TOKEN(_case);}
+"default"                                   {TOKEN(_default);}
+"for"                                       {TOKEN(_for);}
+"while"                                     {TOKEN(_while);}
+"do"                                        {TOKEN(_do);}
+"break"                                     {TOKEN(_break);}
+"continue"                                  {TOKEN(_continue);}
+"return"                                    {TOKEN(_return);}
+
+
+"int"                                       {TOKEN(_int);}
+"float"                                     {TOKEN(_float);}
+"double"                                    {TOKEN(_double);}
+"char"                                      {TOKEN(_char);}
+"bool"                                      {TOKEN(_bool);}
+"void"                                      {TOKEN(_void);}
+"long"                                      {TOKEN(_long);}
+"short"                                     {TOKEN(_short);}
+"unsigned"                                  {TOKEN(_unsigned);}
+"signed"                                    {TOKEN(_signed);}
+
 "main"                                      {TOKEN(_main);}         
 "return"                                    {TOKEN(_return);}         
 
@@ -40,6 +94,7 @@
 
 [0-9]+                                      {
                                             yylval->attr = new Attribute(INT,0,SIZEOFINT,std::string(yytext));
+                                            yylval->attr->is_symbol=0;
                                             TOKEN(_int_lit) ;}
 
 ['].[']                                     {

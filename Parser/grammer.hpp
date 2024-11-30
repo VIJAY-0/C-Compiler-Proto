@@ -213,7 +213,7 @@ namespace yy {
     /// Symbol semantic values.
     union value_type
     {
-#line 68 "Parser/grammer.y"
+#line 126 "Parser/grammer.y"
 
     Attribute* attr ;
     short int s_int;
@@ -253,28 +253,62 @@ namespace yy {
     YYEOF = 0,                     // "end of file"
     YYerror = 256,                 // error
     YYUNDEF = 257,                 // "invalid token"
-    _int = 258,                    // _int
-    _float = 259,                  // _float
-    _char = 260,                   // _char
-    _main = 261,                   // _main
-    _return = 262,                 // _return
-    UNKNOWN = 263,                 // UNKNOWN
-    _semi_col = 264,               // _semi_col
-    _int_lit = 265,                // _int_lit
-    _float_lit = 266,              // _float_lit
-    _identifier = 267,             // _identifier
-    _lpar = 268,                   // "("
-    _rpar = 269,                   // ")"
-    _lbrac = 270,                  // "["
-    _rbrac = 271,                  // "]"
-    _lcurl = 272,                  // "{"
-    _rcurl = 273,                  // "}"
-    _plus = 274,                   // "+"
-    _minus = 275,                  // "-"
-    _star = 276,                   // " _f_slash "
-    _asssign = 277,                // "="
-    _f_slash = 278,                // _f_slash
-    _assign = 279                  // _assign
+    _lpar = 258,                   // "("
+    _rpar = 259,                   // ")"
+    _lbrac = 260,                  // "["
+    _rbrac = 261,                  // "]"
+    _lcurl = 262,                  // "{"
+    _rcurl = 263,                  // "}"
+    _plus = 264,                   // "+"
+    _minus = 265,                  // "-"
+    _star = 266,                   // " _f_slash "
+    _asssign = 267,                // "="
+    _and = 268,                    // _and
+    _or = 269,                     // _or
+    _xor = 270,                    // _xor
+    _modulus = 271,                // _modulus
+    _assign = 272,                 // _assign
+    _equals = 273,                 // _equals
+    _not = 274,                    // _not
+    _not_equals = 275,             // _not_equals
+    _less_than = 276,              // _less_than
+    _greater_than = 277,           // _greater_than
+    _less_equal = 278,             // _less_equal
+    _greater_equal = 279,          // _greater_equal
+    _increment = 280,              // _increment
+    _decrement = 281,              // _decrement
+    _semi_col = 282,               // _semi_col
+    _col = 283,                    // _col
+    _plus_equals = 284,            // _plus_equals
+    _minus_equals = 285,           // _minus_equals
+    _divide_equals = 286,          // _divide_equals
+    _multiply_equals = 287,        // _multiply_equals
+    _if = 288,                     // _if
+    _else = 289,                   // _else
+    _switch = 290,                 // _switch
+    _case = 291,                   // _case
+    _default = 292,                // _default
+    _for = 293,                    // _for
+    _while = 294,                  // _while
+    _do = 295,                     // _do
+    _break = 296,                  // _break
+    _continue = 297,               // _continue
+    _return = 298,                 // _return
+    _int = 299,                    // _int
+    _float = 300,                  // _float
+    _double = 301,                 // _double
+    _char = 302,                   // _char
+    _bool = 303,                   // _bool
+    _void = 304,                   // _void
+    _long = 305,                   // _long
+    _short = 306,                  // _short
+    _unsigned = 307,               // _unsigned
+    _signed = 308,                 // _signed
+    _main = 309,                   // _main
+    _int_lit = 310,                // _int_lit
+    _float_lit = 311,              // _float_lit
+    _identifier = 312,             // _identifier
+    _f_slash = 313                 // _f_slash
       };
       /// Backward compatibility alias (Bison 3.6).
       typedef token_kind_type yytokentype;
@@ -291,45 +325,81 @@ namespace yy {
     {
       enum symbol_kind_type
       {
-        YYNTOKENS = 25, ///< Number of tokens.
+        YYNTOKENS = 59, ///< Number of tokens.
         S_YYEMPTY = -2,
         S_YYEOF = 0,                             // "end of file"
         S_YYerror = 1,                           // error
         S_YYUNDEF = 2,                           // "invalid token"
-        S__int = 3,                              // _int
-        S__float = 4,                            // _float
-        S__char = 5,                             // _char
-        S__main = 6,                             // _main
-        S__return = 7,                           // _return
-        S_UNKNOWN = 8,                           // UNKNOWN
-        S__semi_col = 9,                         // _semi_col
-        S__int_lit = 10,                         // _int_lit
-        S__float_lit = 11,                       // _float_lit
-        S__identifier = 12,                      // _identifier
-        S__lpar = 13,                            // "("
-        S__rpar = 14,                            // ")"
-        S__lbrac = 15,                           // "["
-        S__rbrac = 16,                           // "]"
-        S__lcurl = 17,                           // "{"
-        S__rcurl = 18,                           // "}"
-        S__plus = 19,                            // "+"
-        S__minus = 20,                           // "-"
-        S__star = 21,                            // " _f_slash "
-        S__asssign = 22,                         // "="
-        S__f_slash = 23,                         // _f_slash
-        S__assign = 24,                          // _assign
-        S_YYACCEPT = 25,                         // $accept
-        S_root = 26,                             // root
-        S_27_1 = 27,                             // $@1
-        S_stms = 28,                             // stms
-        S_stm = 29,                              // stm
-        S_expression1 = 30,                      // expression1
-        S_params = 31,                           // params
-        S_var_decl1 = 32,                        // var_decl1
-        S_var_decl = 33,                         // var_decl
-        S__data_type = 34,                       // _data_type
-        S_assignment = 35,                       // assignment
-        S_arithmetic_exp = 36                    // arithmetic_exp
+        S__lpar = 3,                             // "("
+        S__rpar = 4,                             // ")"
+        S__lbrac = 5,                            // "["
+        S__rbrac = 6,                            // "]"
+        S__lcurl = 7,                            // "{"
+        S__rcurl = 8,                            // "}"
+        S__plus = 9,                             // "+"
+        S__minus = 10,                           // "-"
+        S__star = 11,                            // " _f_slash "
+        S__asssign = 12,                         // "="
+        S__and = 13,                             // _and
+        S__or = 14,                              // _or
+        S__xor = 15,                             // _xor
+        S__modulus = 16,                         // _modulus
+        S__assign = 17,                          // _assign
+        S__equals = 18,                          // _equals
+        S__not = 19,                             // _not
+        S__not_equals = 20,                      // _not_equals
+        S__less_than = 21,                       // _less_than
+        S__greater_than = 22,                    // _greater_than
+        S__less_equal = 23,                      // _less_equal
+        S__greater_equal = 24,                   // _greater_equal
+        S__increment = 25,                       // _increment
+        S__decrement = 26,                       // _decrement
+        S__semi_col = 27,                        // _semi_col
+        S__col = 28,                             // _col
+        S__plus_equals = 29,                     // _plus_equals
+        S__minus_equals = 30,                    // _minus_equals
+        S__divide_equals = 31,                   // _divide_equals
+        S__multiply_equals = 32,                 // _multiply_equals
+        S__if = 33,                              // _if
+        S__else = 34,                            // _else
+        S__switch = 35,                          // _switch
+        S__case = 36,                            // _case
+        S__default = 37,                         // _default
+        S__for = 38,                             // _for
+        S__while = 39,                           // _while
+        S__do = 40,                              // _do
+        S__break = 41,                           // _break
+        S__continue = 42,                        // _continue
+        S__return = 43,                          // _return
+        S__int = 44,                             // _int
+        S__float = 45,                           // _float
+        S__double = 46,                          // _double
+        S__char = 47,                            // _char
+        S__bool = 48,                            // _bool
+        S__void = 49,                            // _void
+        S__long = 50,                            // _long
+        S__short = 51,                           // _short
+        S__unsigned = 52,                        // _unsigned
+        S__signed = 53,                          // _signed
+        S__main = 54,                            // _main
+        S__int_lit = 55,                         // _int_lit
+        S__float_lit = 56,                       // _float_lit
+        S__identifier = 57,                      // _identifier
+        S__f_slash = 58,                         // _f_slash
+        S_YYACCEPT = 59,                         // $accept
+        S_root = 60,                             // root
+        S_61_1 = 61,                             // $@1
+        S_stms = 62,                             // stms
+        S_stm = 63,                              // stm
+        S_switch_cases = 64,                     // switch_cases
+        S_opt_expr = 65,                         // opt_expr
+        S_expression1 = 66,                      // expression1
+        S_params = 67,                           // params
+        S_var_decl1 = 68,                        // var_decl1
+        S_var_decl = 69,                         // var_decl
+        S__data_type = 70,                       // _data_type
+        S_assignment = 71,                       // assignment
+        S_arithmetic_exp = 72                    // arithmetic_exp
       };
     };
 
@@ -463,7 +533,7 @@ namespace yy {
     {};
 
     /// Build a parser object.
-    parser (Quad** resultAddr_yyarg, MyLexer* lexer_yyarg);
+    parser (Quad** resultAddr_yyarg, std::map<std::string,Symbol*>* SymbolTableAddr_yyarg, MyLexer* lexer_yyarg);
     virtual ~parser ();
 
 #if 201103L <= YY_CPLUSPLUS
@@ -586,7 +656,7 @@ namespace yy {
 
 #if YYDEBUG
     // YYRLINE[YYN] -- Source line where rule number YYN was defined.
-    static const unsigned char yyrline_[];
+    static const short yyrline_[];
     /// Report on the debug stream that the rule \a r is going to be reduced.
     virtual void yy_reduce_print_ (int r) const;
     /// Print the state stack on the debug stream.
@@ -813,21 +883,22 @@ namespace yy {
     /// Constants.
     enum
     {
-      yylast_ = 66,     ///< Last index in yytable_.
-      yynnts_ = 12,  ///< Number of nonterminal symbols.
+      yylast_ = 128,     ///< Last index in yytable_.
+      yynnts_ = 14,  ///< Number of nonterminal symbols.
       yyfinal_ = 4 ///< Termination state number.
     };
 
 
     // User arguments.
     Quad** resultAddr;
+    std::map<std::string,Symbol*>* SymbolTableAddr;
     MyLexer* lexer;
 
   };
 
 
 } // yy
-#line 831 "Parser/grammer.hpp"
+#line 902 "Parser/grammer.hpp"
 
 
 

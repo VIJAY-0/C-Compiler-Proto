@@ -37,7 +37,7 @@
 
 
 // First part of user prologue.
-#line 26 "Parser/grammer.y"
+#line 27 "Parser/grammer.y"
 
 
     #include "./../Lexer/MyLexer.hpp"
@@ -55,8 +55,9 @@
     //symbol table
     long int relAddr = 0;
     std::map<std::string,Symbol*> SymbolTable;
+    Attribute* null_attr = nullptr;
 
-#line 60 "Parser/grammer.cpp"
+#line 61 "Parser/grammer.cpp"
 
 
 #include "grammer.hpp"
@@ -134,10 +135,10 @@
 #define YYRECOVERING()  (!!yyerrstatus_)
 
 namespace yy {
-#line 138 "Parser/grammer.cpp"
+#line 139 "Parser/grammer.cpp"
 
   /// Build a parser object.
-  parser::parser (Quad** resultAddr_yyarg, MyLexer* lexer_yyarg)
+  parser::parser (Quad** resultAddr_yyarg, std::map<std::string,Symbol*>* SymbolTableAddr_yyarg, MyLexer* lexer_yyarg)
 #if YYDEBUG
     : yydebug_ (false),
       yycdebug_ (&std::cerr),
@@ -145,6 +146,7 @@ namespace yy {
     :
 #endif
       resultAddr (resultAddr_yyarg),
+      SymbolTableAddr (SymbolTableAddr_yyarg),
       lexer (lexer_yyarg)
   {}
 
@@ -590,157 +592,183 @@ namespace yy {
           switch (yyn)
             {
   case 2: // $@1: %empty
-#line 82 "Parser/grammer.y"
+#line 140 "Parser/grammer.y"
                           {
                     createQuadList(&QuadTable);
                     std::cerr<<"\nsize of "<<sizeof(SymbolTable)<<'\n';
 
                 }
-#line 600 "Parser/grammer.cpp"
+#line 602 "Parser/grammer.cpp"
     break;
 
   case 3: // root: _int _main $@1 "(" params ")" "{" stms "}"
-#line 87 "Parser/grammer.y"
+#line 145 "Parser/grammer.y"
                                                       {
-                    *resultAddr = QuadTable;  
+
+                    
+                    addCode(QuadTable,"exit",'!',null_attr,null_attr,null_attr);
+                    
+                    
+                    *resultAddr = QuadTable;
+                    *SymbolTableAddr = SymbolTable;  
                     printTable(SymbolTable);
                 }
-#line 609 "Parser/grammer.cpp"
+#line 617 "Parser/grammer.cpp"
     break;
 
-  case 9: // expression1: var_decl
-#line 98 "Parser/grammer.y"
+  case 25: // expression1: var_decl
+#line 181 "Parser/grammer.y"
                          {}
-#line 615 "Parser/grammer.cpp"
+#line 623 "Parser/grammer.cpp"
     break;
 
-  case 12: // var_decl1: _data_type _identifier
-#line 103 "Parser/grammer.y"
+  case 28: // var_decl1: _data_type _identifier
+#line 186 "Parser/grammer.y"
                                       {
                     SymbolTable[std::string((yystack_[0].value.attr)->name)] =  new Symbol(std::string((yystack_[0].value.attr)->name),(yystack_[1].value.d_type).datatype,(yystack_[1].value.d_type).dataSize,relAddr);
                     relAddr = relAddr +  (yystack_[1].value.d_type).dataSize ;
                 }
-#line 624 "Parser/grammer.cpp"
+#line 632 "Parser/grammer.cpp"
     break;
 
-  case 15: // _data_type: _char
-#line 111 "Parser/grammer.y"
+  case 31: // _data_type: _char
+#line 198 "Parser/grammer.y"
                      {
                     (yylhs.value.d_type).datatype = CHAR;
                     (yylhs.value.d_type).dataSize = SIZEOFCHAR;
                 }
-#line 633 "Parser/grammer.cpp"
+#line 641 "Parser/grammer.cpp"
     break;
 
-  case 16: // _data_type: _int
-#line 115 "Parser/grammer.y"
+  case 32: // _data_type: _int
+#line 202 "Parser/grammer.y"
                     {
                     (yylhs.value.d_type).datatype = INT;
                     (yylhs.value.d_type).dataSize = SIZEOFINT;
                 }
-#line 642 "Parser/grammer.cpp"
+#line 650 "Parser/grammer.cpp"
     break;
 
-  case 17: // _data_type: _float
-#line 119 "Parser/grammer.y"
+  case 33: // _data_type: _float
+#line 206 "Parser/grammer.y"
                       {
                     (yylhs.value.d_type).datatype = FLOAT;
                     (yylhs.value.d_type).dataSize = SIZEOFFLOAT;
                 }
-#line 651 "Parser/grammer.cpp"
+#line 659 "Parser/grammer.cpp"
     break;
 
-  case 18: // assignment: _identifier _assign arithmetic_exp
-#line 124 "Parser/grammer.y"
+  case 34: // assignment: _identifier _assign arithmetic_exp
+#line 211 "Parser/grammer.y"
                                                   {
                     if(SymbolTable.find((yystack_[2].value.attr)->name)==SymbolTable.end()) std::cerr<<"Variable not declared !!!\n";
-                    else{addCode(QuadTable,labelPending,'=',(yystack_[2].value.attr),(yystack_[0].value.attr),(yystack_[2].value.attr));
-                    std::cerr<<(yystack_[2].value.attr)->name<<" "<<(yystack_[2].value.attr)->name<<" = "<<(yystack_[0].value.attr)->name<<'\n';}
+                    else{addCode(QuadTable,"assign",'=',(yystack_[2].value.attr),(yystack_[0].value.attr),(yystack_[2].value.attr));
+                    // std::cerr<<$1->name<<" "<<$1->name<<" = "<<$3->name<<'\n';
+                    }
                 }
-#line 661 "Parser/grammer.cpp"
+#line 670 "Parser/grammer.cpp"
     break;
 
-  case 19: // arithmetic_exp: arithmetic_exp "+" arithmetic_exp
-#line 129 "Parser/grammer.y"
+  case 35: // arithmetic_exp: arithmetic_exp "+" arithmetic_exp
+#line 218 "Parser/grammer.y"
                                                      {
-                    (yylhs.value.attr)->name= "temp"+std::to_string(temp_var_cnt);  
-                    addCode(QuadTable,(yylhs.value.attr)->name,'+',(yystack_[2].value.attr),(yystack_[0].value.attr),(yylhs.value.attr));
-                    std::cerr<<(yylhs.value.attr)->name<<" = "<<(yystack_[2].value.attr)->name<<" + "<<(yystack_[0].value.attr)->name<<'\n';
+                    // std::cerr<<'\n'<<$$->name<<" = "<<$1->name<<" + "<<$3->name<<'\n';
+                    std::string name = "temp"+std::to_string(temp_var_cnt) ;
+                    (yylhs.value.attr) = new Attribute((yystack_[2].value.attr)->type,(yystack_[2].value.attr)->subtype,(yystack_[2].value.attr)->dataSize,name);
                     temp_var_cnt++;
+
+                    std::cerr<<(yylhs.value.attr)->name<<" = "<<(yystack_[2].value.attr)->name<<" + "<<(yystack_[0].value.attr)->name<<'\n';
+                    addCode(QuadTable,"arithmetic",'+',(yystack_[2].value.attr),(yystack_[0].value.attr),(yylhs.value.attr));
 
                     SymbolTable[std::string((yylhs.value.attr)->name)] = new Symbol(std::string((yylhs.value.attr)->name),(yylhs.value.attr)->type,(yylhs.value.attr)->dataSize,relAddr);
                     relAddr = relAddr +  (yylhs.value.attr)->dataSize ;
                 }
-#line 675 "Parser/grammer.cpp"
+#line 687 "Parser/grammer.cpp"
     break;
 
-  case 20: // arithmetic_exp: arithmetic_exp "-" arithmetic_exp
-#line 138 "Parser/grammer.y"
+  case 36: // arithmetic_exp: arithmetic_exp "-" arithmetic_exp
+#line 230 "Parser/grammer.y"
                                                        {
+                    std::string name = "temp"+std::to_string(temp_var_cnt) ;
+                    (yylhs.value.attr) = new Attribute((yystack_[2].value.attr)->type,(yystack_[2].value.attr)->subtype,(yystack_[2].value.attr)->dataSize,name);
+                    temp_var_cnt++;
+
+                    std::cerr<<(yylhs.value.attr)->name<<" = "<<(yystack_[2].value.attr)->name<<" - "<<(yystack_[0].value.attr)->name<<'\n';
+                    addCode(QuadTable,"arithmetic",'-',(yystack_[2].value.attr),(yystack_[0].value.attr),(yylhs.value.attr));
+
+                    SymbolTable[std::string((yylhs.value.attr)->name)] = new Symbol(std::string((yylhs.value.attr)->name),(yylhs.value.attr)->type,(yylhs.value.attr)->dataSize,relAddr);
+                    relAddr = relAddr +  (yylhs.value.attr)->dataSize ;
                 }
-#line 682 "Parser/grammer.cpp"
+#line 703 "Parser/grammer.cpp"
     break;
 
-  case 21: // arithmetic_exp: arithmetic_exp _f_slash arithmetic_exp
-#line 140 "Parser/grammer.y"
+  case 37: // arithmetic_exp: arithmetic_exp _f_slash arithmetic_exp
+#line 241 "Parser/grammer.y"
                                                          {
-}
-#line 689 "Parser/grammer.cpp"
-    break;
+                
+                    std::string name = "temp"+std::to_string(temp_var_cnt) ;
+                    (yylhs.value.attr) = new Attribute((yystack_[2].value.attr)->type,(yystack_[2].value.attr)->subtype,(yystack_[2].value.attr)->dataSize,name);
+                    temp_var_cnt++;
 
-  case 22: // arithmetic_exp: arithmetic_exp " _f_slash " arithmetic_exp
-#line 142 "Parser/grammer.y"
-                                                      {
+                    std::cerr<<(yylhs.value.attr)->name<<" = "<<(yystack_[2].value.attr)->name<<" / "<<(yystack_[0].value.attr)->name<<'\n';
+                    addCode(QuadTable,"arithmetic",'/',(yystack_[2].value.attr),(yystack_[0].value.attr),(yylhs.value.attr));
+
+                    SymbolTable[std::string((yylhs.value.attr)->name)] = new Symbol(std::string((yylhs.value.attr)->name),(yylhs.value.attr)->type,(yylhs.value.attr)->dataSize,relAddr);
+                    relAddr = relAddr +  (yylhs.value.attr)->dataSize ;
                 }
-#line 696 "Parser/grammer.cpp"
+#line 720 "Parser/grammer.cpp"
     break;
 
-  case 23: // arithmetic_exp: "(" arithmetic_exp ")"
-#line 144 "Parser/grammer.y"
+  case 38: // arithmetic_exp: arithmetic_exp " _f_slash " arithmetic_exp
+#line 253 "Parser/grammer.y"
+                                                      {
+                    std::string name = "temp"+std::to_string(temp_var_cnt) ;
+                    (yylhs.value.attr) = new Attribute((yystack_[2].value.attr)->type,(yystack_[2].value.attr)->subtype,(yystack_[2].value.attr)->dataSize,name);
+                    temp_var_cnt++;
+
+                    std::cerr<<(yylhs.value.attr)->name<<" = "<<(yystack_[2].value.attr)->name<<" * "<<(yystack_[0].value.attr)->name<<'\n';
+                    addCode(QuadTable,"arithmetic",'*',(yystack_[2].value.attr),(yystack_[0].value.attr),(yylhs.value.attr));
+
+                    SymbolTable[std::string((yylhs.value.attr)->name)] = new Symbol(std::string((yylhs.value.attr)->name),(yylhs.value.attr)->type,(yylhs.value.attr)->dataSize,relAddr);
+                    relAddr = relAddr +  (yylhs.value.attr)->dataSize ;
+                }
+#line 736 "Parser/grammer.cpp"
+    break;
+
+  case 39: // arithmetic_exp: "(" arithmetic_exp ")"
+#line 264 "Parser/grammer.y"
                                             {
                     (yylhs.value.attr) = (yystack_[1].value.attr);
                 }
-#line 704 "Parser/grammer.cpp"
+#line 744 "Parser/grammer.cpp"
     break;
 
-  case 24: // arithmetic_exp: "[" arithmetic_exp "]"
-#line 147 "Parser/grammer.y"
-                                             {}
-#line 710 "Parser/grammer.cpp"
-    break;
-
-  case 25: // arithmetic_exp: "}" arithmetic_exp "}"
-#line 148 "Parser/grammer.y"
-                                             {}
-#line 716 "Parser/grammer.cpp"
-    break;
-
-  case 26: // arithmetic_exp: _identifier
-#line 149 "Parser/grammer.y"
+  case 40: // arithmetic_exp: _identifier
+#line 268 "Parser/grammer.y"
                                         {
 
                 }
-#line 724 "Parser/grammer.cpp"
+#line 752 "Parser/grammer.cpp"
     break;
 
-  case 27: // arithmetic_exp: _int_lit
-#line 152 "Parser/grammer.y"
+  case 41: // arithmetic_exp: _int_lit
+#line 271 "Parser/grammer.y"
                                        {
                     (yylhs.value.attr) = (yystack_[0].value.attr);
                 }
-#line 732 "Parser/grammer.cpp"
+#line 760 "Parser/grammer.cpp"
     break;
 
-  case 28: // arithmetic_exp: _float_lit
-#line 155 "Parser/grammer.y"
+  case 42: // arithmetic_exp: _float_lit
+#line 274 "Parser/grammer.y"
                                        {
                     (yylhs.value.attr) = (yystack_[0].value.attr);
                 }
-#line 740 "Parser/grammer.cpp"
+#line 768 "Parser/grammer.cpp"
     break;
 
 
-#line 744 "Parser/grammer.cpp"
+#line 772 "Parser/grammer.cpp"
 
             default:
               break;
@@ -929,95 +957,126 @@ namespace yy {
 
 
 
-  const signed char parser::yypact_ninf_ = -27;
+  const signed char parser::yypact_ninf_ = -45;
 
   const signed char parser::yytable_ninf_ = -1;
 
   const signed char
   parser::yypact_[] =
   {
-       0,    10,    24,   -27,   -27,    -5,     2,   -27,   -27,   -27,
-      20,   -27,    28,    25,   -27,    18,    35,    31,    -3,   -27,
-      40,   -27,   -27,    48,   -27,    53,    26,   -27,   -27,   -27,
-      31,   -27,   -27,   -27,   -27,   -27,    26,    26,    26,    38,
-      12,    27,    33,    26,    26,    26,    26,   -27,   -27,   -27,
-     -27,   -27,    -6,     8
+     -41,   -40,    34,   -45,   -45,     7,     6,   -45,   -45,   -45,
+      33,   -45,   -16,    36,   -45,    69,    41,    52,    55,    58,
+      69,    25,    42,    -9,    56,    49,   -45,    47,   -45,   -45,
+      18,   -45,    15,    15,    15,    15,    39,   -45,   -45,    59,
+      62,    68,   -45,     9,   -45,   -45,   -45,    62,   -45,    81,
+      93,    71,    95,    97,   -45,     9,   -45,     9,   -45,   -45,
+     -45,    10,    69,    94,    15,    69,    15,    10,    -2,     9,
+       9,     9,     9,    83,    -7,    76,   -45,   101,   -45,   -45,
+     -45,    30,    13,    69,    15,    87,    -4,    15,    91,   -45,
+      92,    69,   -45,    15,    96,   115,   -45,    69,   -45,    99,
+      69,    69,   -45,    69,   -45,   -45,   -45
   };
 
   const signed char
   parser::yydefact_[] =
   {
-       0,     0,     0,     2,     1,     0,    11,    16,    17,    15,
-       0,    10,     0,     0,    12,     0,     0,     0,     0,     5,
-       0,    13,     9,     0,     8,     0,     0,     3,     4,     6,
-      12,    14,     7,    27,    28,    26,     0,     0,     0,    18,
-       0,     0,     0,     0,     0,     0,     0,    23,    24,    25,
-      19,    20,    22,    21
+       0,     0,     0,     2,     1,     0,    27,    32,    33,    31,
+       0,    26,     0,     0,    28,     0,     0,     0,     0,     0,
+       0,     0,     0,    23,     0,     0,     5,     0,    29,    25,
+       0,    24,     0,     0,    23,     0,     0,    14,    15,     0,
+       0,     0,    22,     0,     3,     4,     6,    28,    30,     0,
+       0,     0,     0,     0,     7,     0,    16,     0,    41,    42,
+      40,    34,     0,     0,    23,     0,     0,    34,     0,     0,
+       0,     0,     0,     8,     0,     0,    12,     0,    39,    35,
+      36,    38,    37,     0,     0,     0,     0,    23,     0,     9,
+       0,     0,    10,     0,     0,     0,    13,     0,    21,     0,
+       0,     0,    20,     0,    19,    11,    18
   };
 
   const signed char
   parser::yypgoto_[] =
   {
-     -27,   -27,   -27,   -27,    45,   -27,   -27,    58,   -27,    59,
-      43,   -26
+     -45,   -45,   -45,   -45,   -20,   -45,   -33,   -17,   -45,   116,
+     -45,   117,    98,   -44
   };
 
   const signed char
   parser::yydefgoto_[] =
   {
-       0,     2,     5,    18,    19,    20,    10,    21,    22,    23,
-      24,    39
+       0,     2,     5,    25,    26,    86,    41,    27,    10,    28,
+      29,    30,    31,    61
   };
 
   const signed char
   parser::yytable_[] =
   {
-       7,     8,     9,     1,    16,     7,     8,     9,     6,    17,
-      40,    41,    42,    43,    44,    27,     3,    50,    51,    52,
-      53,     7,     8,     9,     4,    16,    47,    43,    44,    45,
-      17,    43,    44,    45,    13,    46,    33,    34,    35,    36,
-      14,    37,    15,    48,    38,    25,    43,    44,    45,    29,
-      46,    49,    43,    44,    45,    26,    46,    43,    44,    45,
-      30,    46,    32,    28,    11,    12,    31
+      36,    51,    78,     1,    92,    45,    42,    69,    70,    71,
+       6,    67,    57,    68,     3,    49,    50,    42,    52,    69,
+      70,    71,    69,    70,    71,    79,    80,    81,    82,    84,
+      85,    75,    93,    94,     4,     7,     8,    13,     9,    69,
+      70,    14,    73,    15,    32,    76,    39,    42,    40,    77,
+       7,     8,    37,     9,    95,    33,    72,    44,    34,     7,
+       8,    35,     9,    89,    58,    59,    60,    90,    72,    38,
+      42,    98,    40,    43,    46,    47,    99,   102,    53,    55,
+     104,   105,    16,   106,    17,    62,    54,    18,    19,    20,
+      21,    22,    23,     7,     8,    56,     9,    63,    64,    65,
+      66,    74,    16,    87,    17,    88,    24,    18,    19,    20,
+      21,    22,    23,     7,     8,    91,     9,    83,    96,   101,
+      97,     0,    11,    12,   100,     0,    24,   103,    48
   };
 
   const signed char
   parser::yycheck_[] =
   {
-       3,     4,     5,     3,     7,     3,     4,     5,    13,    12,
-      36,    37,    38,    19,    20,    18,     6,    43,    44,    45,
-      46,     3,     4,     5,     0,     7,    14,    19,    20,    21,
-      12,    19,    20,    21,    14,    23,    10,    11,    12,    13,
-      12,    15,    17,    16,    18,    10,    19,    20,    21,     9,
-      23,    18,    19,    20,    21,    24,    23,    19,    20,    21,
-      12,    23,     9,    18,     6,     6,    23
+      20,    34,     4,    44,     8,    25,    23,     9,    10,    11,
+       3,    55,     3,    57,    54,    32,    33,    34,    35,     9,
+      10,    11,     9,    10,    11,    69,    70,    71,    72,    36,
+      37,    64,    36,    37,     0,    44,    45,     4,    47,     9,
+      10,    57,    62,     7,     3,    65,    55,    64,    57,    66,
+      44,    45,    27,    47,    87,     3,    58,     8,     3,    44,
+      45,     3,    47,    83,    55,    56,    57,    84,    58,    27,
+      87,    91,    57,    17,    27,    57,    93,    97,    39,    17,
+     100,   101,    33,   103,    35,     4,    27,    38,    39,    40,
+      41,    42,    43,    44,    45,    27,    47,     4,    27,     4,
+       3,     7,    33,    27,    35,     4,    57,    38,    39,    40,
+      41,    42,    43,    44,    45,    28,    47,    34,    27,     4,
+      28,    -1,     6,     6,    28,    -1,    57,    28,    30
   };
 
   const signed char
   parser::yystos_[] =
   {
-       0,     3,    26,     6,     0,    27,    13,     3,     4,     5,
-      31,    32,    34,    14,    12,    17,     7,    12,    28,    29,
-      30,    32,    33,    34,    35,    10,    24,    18,    29,     9,
-      12,    35,     9,    10,    11,    12,    13,    15,    18,    36,
-      36,    36,    36,    19,    20,    21,    23,    14,    16,    18,
-      36,    36,    36,    36
+       0,    44,    60,    54,     0,    61,     3,    44,    45,    47,
+      67,    68,    70,     4,    57,     7,    33,    35,    38,    39,
+      40,    41,    42,    43,    57,    62,    63,    66,    68,    69,
+      70,    71,     3,     3,     3,     3,    63,    27,    27,    55,
+      57,    65,    66,    17,     8,    63,    27,    57,    71,    66,
+      66,    65,    66,    39,    27,    17,    27,     3,    55,    56,
+      57,    72,     4,     4,    27,     4,     3,    72,    72,     9,
+      10,    11,    58,    63,     7,    65,    63,    66,     4,    72,
+      72,    72,    72,    34,    36,    37,    64,    27,     4,    63,
+      66,    28,     8,    36,    37,    65,    27,    28,    63,    66,
+      28,     4,    63,    28,    63,    63,    63
   };
 
   const signed char
   parser::yyr1_[] =
   {
-       0,    25,    27,    26,    28,    28,    29,    29,    30,    30,
-      31,    31,    32,    33,    33,    34,    34,    34,    35,    36,
-      36,    36,    36,    36,    36,    36,    36,    36,    36
+       0,    59,    61,    60,    62,    62,    63,    63,    63,    63,
+      63,    63,    63,    63,    63,    63,    63,    63,    64,    64,
+      64,    64,    65,    65,    66,    66,    67,    67,    68,    69,
+      69,    70,    70,    70,    71,    72,    72,    72,    72,    72,
+      72,    72,    72
   };
 
   const signed char
   parser::yyr2_[] =
   {
-       0,     2,     0,     9,     2,     1,     2,     3,     1,     1,
-       1,     0,     2,     1,     2,     1,     1,     1,     3,     3,
-       3,     3,     3,     3,     3,     3,     1,     1,     1
+       0,     2,     0,     9,     2,     1,     2,     3,     5,     7,
+       7,     9,     5,     7,     2,     2,     3,     4,     5,     4,
+       4,     3,     1,     0,     1,     1,     1,     0,     2,     1,
+       2,     1,     1,     1,     3,     3,     3,     3,     3,     3,
+       1,     1,     1
   };
 
 
@@ -1027,11 +1086,17 @@ namespace yy {
   const char*
   const parser::yytname_[] =
   {
-  "\"end of file\"", "error", "\"invalid token\"", "_int", "_float",
-  "_char", "_main", "_return", "UNKNOWN", "_semi_col", "_int_lit",
-  "_float_lit", "_identifier", "\"(\"", "\")\"", "\"[\"", "\"]\"", "\"{\"",
-  "\"}\"", "\"+\"", "\"-\"", "\" _f_slash \"", "\"=\"", "_f_slash",
-  "_assign", "$accept", "root", "$@1", "stms", "stm", "expression1",
+  "\"end of file\"", "error", "\"invalid token\"", "\"(\"", "\")\"",
+  "\"[\"", "\"]\"", "\"{\"", "\"}\"", "\"+\"", "\"-\"", "\" _f_slash \"",
+  "\"=\"", "_and", "_or", "_xor", "_modulus", "_assign", "_equals", "_not",
+  "_not_equals", "_less_than", "_greater_than", "_less_equal",
+  "_greater_equal", "_increment", "_decrement", "_semi_col", "_col",
+  "_plus_equals", "_minus_equals", "_divide_equals", "_multiply_equals",
+  "_if", "_else", "_switch", "_case", "_default", "_for", "_while", "_do",
+  "_break", "_continue", "_return", "_int", "_float", "_double", "_char",
+  "_bool", "_void", "_long", "_short", "_unsigned", "_signed", "_main",
+  "_int_lit", "_float_lit", "_identifier", "_f_slash", "$accept", "root",
+  "$@1", "stms", "stm", "switch_cases", "opt_expr", "expression1",
   "params", "var_decl1", "var_decl", "_data_type", "assignment",
   "arithmetic_exp", YY_NULLPTR
   };
@@ -1039,12 +1104,14 @@ namespace yy {
 
 
 #if YYDEBUG
-  const unsigned char
+  const short
   parser::yyrline_[] =
   {
-       0,    82,    82,    82,    92,    92,    94,    95,    97,    98,
-     100,   101,   103,   108,   109,   111,   115,   119,   124,   129,
-     138,   140,   142,   144,   147,   148,   149,   152,   155
+       0,   140,   140,   140,   156,   156,   159,   160,   161,   162,
+     163,   164,   165,   166,   167,   168,   169,   170,   172,   173,
+     174,   175,   177,   177,   180,   181,   183,   184,   186,   195,
+     196,   198,   202,   206,   211,   218,   230,   241,   253,   264,
+     268,   271,   274
   };
 
   void
@@ -1110,10 +1177,14 @@ namespace yy {
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     1,     2,     3,     4,
        5,     6,     7,     8,     9,    10,    11,    12,    13,    14,
-      15,    16,    17,    18,    19,    20,    21,    22,    23,    24
+      15,    16,    17,    18,    19,    20,    21,    22,    23,    24,
+      25,    26,    27,    28,    29,    30,    31,    32,    33,    34,
+      35,    36,    37,    38,    39,    40,    41,    42,    43,    44,
+      45,    46,    47,    48,    49,    50,    51,    52,    53,    54,
+      55,    56,    57,    58
     };
     // Last valid token kind.
-    const int code_max = 279;
+    const int code_max = 313;
 
     if (t <= 0)
       return symbol_kind::S_YYEOF;
@@ -1124,11 +1195,12 @@ namespace yy {
   }
 
 } // yy
-#line 1128 "Parser/grammer.cpp"
+#line 1199 "Parser/grammer.cpp"
 
-#line 158 "Parser/grammer.y"
+#line 277 "Parser/grammer.y"
 
 
 void yy::parser::error(const std::string &msg){
     std::cerr<<msg;
 }
+
